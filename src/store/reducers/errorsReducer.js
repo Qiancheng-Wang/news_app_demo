@@ -1,4 +1,4 @@
-import { GET_ERRORS } from "../actions/actionTypes";
+import { GET_ERROR } from "../actions/actionTypes";
 
 const initialState = {
   error: null
@@ -6,7 +6,7 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case GET_ERRORS:
+    case GET_ERROR:
       return {
         ...state,
         error: action.error

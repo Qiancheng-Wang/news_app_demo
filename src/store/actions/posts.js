@@ -4,13 +4,16 @@ import {
   GET_POSTS_BY_PAGE,
   GET_POSTS_BY_PAGE_SUCCESS,
   SELECT_SINGLE_POST,
-  GET_ERROR,
   LOAD_POSTS,
   LOAD_POSTS_SUCCESS,
-  GET_ERRORS
+  GET_ERROR
 } from "./actionTypes";
 
-import { defaultApi, getPostByPage, getPostById } from "../../../src/api/api";
+import {
+  defaultApi,
+  getPostByPageAPI,
+  getPostByIdAPI
+} from "../../../src/api/api";
 
 export const getDefaultPosts = () => {
   return async dispatch => {
@@ -33,7 +36,26 @@ const getDefaultPostsSuccess = data => {
 
 const getErrors = e => {
   return {
-    type: GET_ERRORS,
+    type: GET_ERROR,
     error: e
+  };
+};
+
+export const getPostsByPage = (pageNum, postsPerPage) => {
+  return async dispatch => {
+    dispatch({ type: GET_POSTS_BY_PAGE });
+    try {
+      const data = await getPostByPageAPI(pageNum, postsPerPage);
+      return dispatch(getPostsByPageSuccess(data));
+    } catch (e) {
+      return dispatch(getErrors(e));
+    }
+  };
+};
+
+const getPostsByPageSuccess = data => {
+  return {
+    type: GET_POSTS_BY_PAGE_SUCCESS,
+    data: data.data
   };
 };

@@ -11,7 +11,7 @@ import {
   RefreshControl
 } from "react-native";
 
-import { getDefaultPosts } from "../../store/actions/posts";
+import { getDefaultPosts, getPostsByPage } from "../../store/actions/posts";
 
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
@@ -27,7 +27,8 @@ class PostListViewer extends Component {
       data: null,
       post: null,
       error: null,
-      refreshing: false
+      refreshing: false,
+      onEndReachedCalledDuringMomentum: true
     };
   }
 
@@ -102,8 +103,31 @@ class PostListViewer extends Component {
   };
 
   _onLoad = () => {
-    console.log("Load Posts");
-    // todo concat load posts.
+    //console.log("Load Posts");
+
+    if (this.state.onEndReachedCalledDuringMomentum) {
+      return;
+    }
+
+    if (this.state.loading) {
+      return;
+    }
+
+    this.setState({
+      loading: true
+    });
+    try {
+      //console.log(this.props.posts.currentPage);
+      this.props.onGetPostsByPage(this.props.posts.currentPage, 5);
+      this.setState({
+        loading: false
+      });
+    } catch (err) {
+      console.log(err);
+      this.setState({
+        loading: false
+      });
+    }
   };
 
   _onRefresh = async () => {
@@ -142,6 +166,9 @@ class PostListViewer extends Component {
             numColumns={1}
             onEndReachedThreshold={0}
             onEndReached={() => this._onLoad()}
+            onMomentumScrollBegin={() =>
+              this.setState({ onEndReachedCalledDuringMomentum: false })
+            }
             refreshControl={
               <RefreshControl
                 refreshing={this.state.refreshing}
@@ -169,7 +196,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onGetDefaultPosts: () => dispatch(getDefaultPosts())
+    onGetDefaultPosts: () => dispatch(getDefaultPosts()),
+    onGetPostsByPage: (pageNum, postPerPage) =>
+      dispatch(getPostsByPage(pageNum, postPerPage))
   };
 };
 

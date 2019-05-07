@@ -9,7 +9,7 @@ export const defaultApi = async () => {
   return data;
 };
 
-export const getPostByPage = async (pageNum, postPerPage) => {
+export const getPostByPageAPI = async (pageNum, postPerPage) => {
   console.log("calling getPostByPage");
   const data = await axios.get(
     `https://staging.allfin.com/wordpress/wp-json/wp/v2/posts?page=${pageNum}&per_page=${postPerPage}`
@@ -17,7 +17,7 @@ export const getPostByPage = async (pageNum, postPerPage) => {
   return data;
 };
 
-export const getPostById = async postId => {
+export const getPostByIdAPI = async postId => {
   console.log("calling getPostById");
   const data = await axios.get(
     `https://staging.allfin.com/wordpress/wp-json/wp/v2/posts/${postId}`
