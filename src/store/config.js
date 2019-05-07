@@ -2,10 +2,12 @@ import { createStore, combineReducers, compose, applyMiddleware } from "redux";
 import thunk from "redux-thunk";
 import postReducr from "./reducers/postsReducer";
 import errerReducer from "./reducers/errorsReducer";
+import fontsizeReducer from "./reducers/fontsizeReducer";
 
 const rootReducer = combineReducers({
   posts: postReducr,
-  errors: errerReducer
+  errors: errerReducer,
+  fontsize: fontsizeReducer
 });
 
 let composeEnhancers = compose;
