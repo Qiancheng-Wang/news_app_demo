@@ -4,8 +4,7 @@ import {
   GET_POSTS_BY_PAGE,
   GET_POSTS_BY_PAGE_SUCCESS,
   SELECT_SINGLE_POST,
-  LOAD_POSTS,
-  LOAD_POSTS_SUCCESS,
+  SELECT_SINGLE_POST_SUCCESS,
   GET_ERROR
 } from "./actionTypes";
 
@@ -56,6 +55,25 @@ export const getPostsByPage = (pageNum, postsPerPage) => {
 const getPostsByPageSuccess = data => {
   return {
     type: GET_POSTS_BY_PAGE_SUCCESS,
+    data: data.data
+  };
+};
+
+export const selectPostById = postId => {
+  return async dispatch => {
+    dispatch({ type: SELECT_SINGLE_POST });
+    try {
+      const data = await getPostByIdAPI(postId);
+      return dispatch(selectPostByIdSuccess(data));
+    } catch (e) {
+      return dispatch(getErrors(e));
+    }
+  };
+};
+
+const selectPostByIdSuccess = data => {
+  return {
+    type: SELECT_SINGLE_POST_SUCCESS,
     data: data.data
   };
 };

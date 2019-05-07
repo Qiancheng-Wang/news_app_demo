@@ -4,6 +4,7 @@ import {
   GET_POSTS_BY_PAGE,
   GET_POSTS_BY_PAGE_SUCCESS,
   SELECT_SINGLE_POST,
+  SELECT_SINGLE_POST_SUCCESS,
   GET_ERROR,
   LOAD_POSTS,
   LOAD_POSTS_SUCCESS
@@ -41,6 +42,17 @@ const reducer = (state = initialState, action) => {
         currentPage: state.currentPage + 1,
         posts: state.posts.concat(action.data),
         loading: false
+      };
+    case SELECT_SINGLE_POST:
+      return {
+        ...state,
+        loading: true
+      };
+    case SELECT_SINGLE_POST_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        selectedPost: action.data
       };
     default:
       return state;

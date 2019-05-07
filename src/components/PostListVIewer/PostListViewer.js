@@ -11,7 +11,11 @@ import {
   RefreshControl
 } from "react-native";
 
-import { getDefaultPosts, getPostsByPage } from "../../store/actions/posts";
+import {
+  getDefaultPosts,
+  getPostsByPage,
+  selectPostById
+} from "../../store/actions/posts";
 
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
@@ -89,16 +93,10 @@ class PostListViewer extends Component {
     const { navigate } = this.props;
 
     try {
-      const post = await getPostById(postId);
-      this.setState({
-        post: post.data
-      });
-
+      this.props.onSelectPostById(postId);
       navigate("Post");
     } catch (err) {
-      this.setState({
-        error: err
-      });
+      console.log(err);
     }
   };
 
@@ -198,7 +196,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onGetDefaultPosts: () => dispatch(getDefaultPosts()),
     onGetPostsByPage: (pageNum, postPerPage) =>
-      dispatch(getPostsByPage(pageNum, postPerPage))
+      dispatch(getPostsByPage(pageNum, postPerPage)),
+    onSelectPostById: postId => dispatch(selectPostById(postId))
   };
 };
 
