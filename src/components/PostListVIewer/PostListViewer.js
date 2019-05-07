@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import {
   StyleSheet,
   Text,
@@ -9,9 +10,8 @@ import {
   TouchableOpacity,
   RefreshControl
 } from "react-native";
-import axios from "axios";
 
-import { defaultApi, getPostByPage, getPostById } from "../../api/api";
+import { getDefaultPosts } from "../../store/actions/posts";
 
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
@@ -35,13 +35,16 @@ class PostListViewer extends Component {
     const { defaultPage, defaultNumPerPage } = this.state;
 
     try {
-      const data = await defaultApi();
-      this.setState({
-        data: data.data
-      });
+      this.props.onGetDefaultPosts();
     } catch (err) {
+      console.log(err);
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.posts) {
       this.setState({
-        error: err
+        data: nextProps.posts.posts
       });
     }
   }
@@ -112,14 +115,13 @@ class PostListViewer extends Component {
     //otherwise refreshing is too fast
     setTimeout(async () => {
       try {
-        const data = await defaultApi();
+        this.props.onGetDefaultPosts();
         this.setState({
-          data: data.data,
           refreshing: false
         });
       } catch (err) {
+        console.log(err);
         this.setState({
-          error: err,
           refreshing: false
         });
       }
@@ -158,7 +160,23 @@ class PostListViewer extends Component {
   }
 }
 
-export default PostListViewer;
+const mapStateToProps = state => {
+  return {
+    posts: state.posts,
+    errors: state.errors
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onGetDefaultPosts: () => dispatch(getDefaultPosts())
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PostListViewer);
 
 const styles = StyleSheet.create({
   container: {
