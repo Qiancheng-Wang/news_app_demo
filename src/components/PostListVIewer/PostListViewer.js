@@ -59,7 +59,7 @@ class PostListViewer extends Component {
     } else {
       ConverImageContent = (
         <View style={styles.withoutCoverImage}>
-          <Text>Sorry, Did not found Cover Image for this post</Text>
+          <Text>Sorry, This post doesn't contains a cover image</Text>
         </View>
       );
     }
@@ -82,11 +82,15 @@ class PostListViewer extends Component {
   };
 
   selectPost = async postId => {
+    const { navigate } = this.props;
+
     try {
       const post = await getPostById(postId);
       this.setState({
         post: post.data
       });
+
+      navigate("Post");
     } catch (err) {
       this.setState({
         error: err

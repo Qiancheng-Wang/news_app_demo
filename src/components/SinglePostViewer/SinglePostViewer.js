@@ -1,25 +1,20 @@
 import React, { Component } from "react";
-import { StyleSheet, View } from "react-native";
-
-import PostListViewer from "../PostListVIewer/PostListViewer";
-
-class MainPage extends Component {
+import { StyleSheet, View, Text } from "react-native";
+class SinglePostViewer extends Component {
   static navigationOptions = {
-    title: ""
+    title: "Post"
   };
 
   render() {
-    const { navigate } = this.props.navigation;
-
     return (
       <View style={styles.container}>
-        <PostListViewer navigate={navigate} />
+        <Text>Hello</Text>
       </View>
     );
   }
 }
 
-export default MainPage;
+export default SinglePostViewer;
 
 const styles = StyleSheet.create({
   container: {

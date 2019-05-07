@@ -7,25 +7,21 @@
  */
 
 import React, { Component } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { createStackNavigator, createAppContainer } from "react-navigation";
 
 import MainPage from "./src/components/MainPage/MainPage";
+import SinglePostViewer from "./src/components/SinglePostViewer/SinglePostViewer";
 
-export default class App extends Component {
+const MainNavigator = createStackNavigator({
+  Home: { screen: MainPage },
+  Post: { screen: SinglePostViewer }
+});
+
+const AppNavigator = createAppContainer(MainNavigator);
+
+class App extends Component {
   render() {
-    return (
-      <View style={styles.container}>
-        <MainPage />
-      </View>
-    );
+    return <AppNavigator />;
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF"
-  }
-});
+export default App;
