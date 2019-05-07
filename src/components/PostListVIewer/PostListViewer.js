@@ -11,6 +11,8 @@ import {
 } from "react-native";
 import axios from "axios";
 
+import { defaultApi, getPostByPage, getPostById } from "../../api/api";
+
 import LoadingSpinner from "../LoadingSpinner/LoadingSpinner";
 
 const { width } = Dimensions.get("window");
@@ -23,6 +25,7 @@ class PostListViewer extends Component {
       defaultPage: 1,
       defaultNumPerPage: 10,
       data: null,
+      post: null,
       error: null,
       refreshing: false
     };
@@ -32,9 +35,7 @@ class PostListViewer extends Component {
     const { defaultPage, defaultNumPerPage } = this.state;
 
     try {
-      const data = await axios.get(
-        `https://staging.allfin.com/wordpress/wp-json/wp/v2/posts?page=${defaultPage}&per_page=${defaultNumPerPage}`
-      );
+      const data = await defaultApi();
       this.setState({
         data: data.data
       });
@@ -66,18 +67,31 @@ class PostListViewer extends Component {
       <TouchableOpacity
         key={item.id.toString()}
         style={{ flex: 0, width: "95%", margin: 10, backgroundColor: "white" }}
-        // onPress={() => {
-        //   this.selectMomment(item.moment._id, item.eventType);
-        // }}
+        onPress={() => {
+          this.selectPost(item.id);
+        }}
       >
         <View style={styles.postContainer}>
           {ConverImageContent}
           <View style={styles.postTitleContainer}>
-            <Text>{item.title.rendered}}</Text>
+            <Text style={{ fontSize: 20 }}>{item.title.rendered}</Text>
           </View>
         </View>
       </TouchableOpacity>
     );
+  };
+
+  selectPost = async postId => {
+    try {
+      const post = await getPostById(postId);
+      this.setState({
+        post: post.data
+      });
+    } catch (err) {
+      this.setState({
+        error: err
+      });
+    }
   };
 
   _onLoad = () => {
@@ -85,9 +99,7 @@ class PostListViewer extends Component {
     // todo concat load posts.
   };
 
-  _onRefresh = () => {
-    const { defaultPage, defaultNumPerPage } = this.state;
-
+  _onRefresh = async () => {
     this.setState({
       refreshing: true
     });
@@ -96,9 +108,7 @@ class PostListViewer extends Component {
     //otherwise refreshing is too fast
     setTimeout(async () => {
       try {
-        const data = await axios.get(
-          `https://staging.allfin.com/wordpress/wp-json/wp/v2/posts?page=${defaultPage}&per_page=${defaultNumPerPage}`
-        );
+        const data = await defaultApi();
         this.setState({
           data: data.data,
           refreshing: false
