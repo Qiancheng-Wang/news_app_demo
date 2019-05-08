@@ -23,7 +23,7 @@ class SinglePostViewer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      sliderFontSize: this.props.fontsize.fontsize, //Default
+      sliderFontSize: this.props.fontsize.fontSize, //Default
       showSlider: false
     };
   }
@@ -73,15 +73,15 @@ class SinglePostViewer extends Component {
   };
 
   changeFontSizeHandler = size => {
-    sizeInt = parseInt(size);
+    //sizeInt = parseInt(size);
     this.setState({
-      sliderFontSize: sizeInt
+      sliderFontSize: size
     });
     // this.props.onChangeFontSize(sizeInt);
   };
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.fontsize.fontSize !== this.state.sliderFontSize) {
+    if (nextProps.fontsize.fontSize !== fontSizeGlobal) {
       fontSizeGlobal = nextProps.fontsize.fontSize;
     }
   }
@@ -97,7 +97,7 @@ class SinglePostViewer extends Component {
 
       const date = this.formatDate(selectedPost.date);
       content = (
-        <View>
+        <View style={styles.container}>
           {this.state.showSlider ? (
             <View style={styles.sliderContainer}>
               <Slider
@@ -111,21 +111,34 @@ class SinglePostViewer extends Component {
               <View style={styles.sliderValueContainer}>
                 <Text style={{ color: "white", fontSize: 18 }}>Min 8</Text>
                 <Text style={{ color: "pink", fontSize: 20 }}>
-                  {this.state.sliderFontSize}
+                  {parseInt(this.state.sliderFontSize)}
                 </Text>
                 <Text style={{ color: "white", fontSize: 18 }}>Max 40</Text>
               </View>
             </View>
           ) : null}
 
-          <Text>{selectedPost.title.rendered}</Text>
-          <Text>{date}</Text>
+          <View style={{ width: width * 0.95 }}>
+            <Text style={styles.titleText}>{selectedPost.title.rendered}</Text>
+          </View>
+          <View
+            style={{
+              width: width * 0.95,
+              flexDirection: "row",
+              justifyContent: "flex-start"
+            }}
+          >
+            <Text style={styles.dateText}>{date}</Text>
+          </View>
+
           <ScrollView style={{ flex: 1, width: width * 0.95 }}>
             <HTML
               html={selectedPost.content.rendered}
               allowFontScaling={true}
-              baseFontStyle={styles.dynamicFont}
-              //imagesMaxWidth={width}
+              baseFontStyle={{
+                fontSize: fontSizeGlobal
+              }}
+              imagesMaxWidth={width}
               imagesInitialDimensions={{
                 width: width * 0.9,
                 height: width * 0.72
@@ -163,14 +176,22 @@ export default connect(
   mapDispatchToProps
 )(SinglePostViewer);
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
-    //flex: 1,
-    width: "100%",
-    height: "100%",
+    flex: 1,
+    backgroundColor: "#f5f1ef",
     justifyContent: "center",
     alignItems: "center"
-    //backgroundColor: "yellow"
+  },
+  titleText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    marginBottom: 50
+  },
+  dateText: {
+    fontSize: 14,
+    color: "#9d9897",
+    marginBottom: 20
   },
   sliderContainer: {
     position: "absolute",
@@ -192,8 +213,5 @@ var styles = StyleSheet.create({
     alignContent: "center",
     justifyContent: "space-between",
     width: width * 0.7
-  },
-  dynamicFont: {
-    fontSize: fontSizeGlobal
   }
 });
